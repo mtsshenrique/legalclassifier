@@ -1,37 +1,86 @@
+from pandas import DataFrame
+import unidecode
+import os
+
+id=0
+dict = {}
+arqs_lidos = 0
+pubs_lidas = 0
+for root, dirs, files in os.walk("publicacoes"):
+    for dir in dirs:
+        for root, dirs_pubs, files in os.walk("publicacoes/"+dir+"/"):
+            for file in files:
+                file_path = "publicacoes/"+dir+"/"+file.__str__()
+                #print (file_path)
+                try:
+                    arquivo = open(file_path,'r',encoding = "cp1252")
+                    txt = arquivo.read()
+                    arqs_lidos+=1
+                except:
+                    continue
+                arquivo.close()
+
+                #tratamento de texto
+                txt = txt.lower()
+                txt = unidecode.unidecode(txt)
+                txt = txt.replace("\\b","").replace("\\par","").replace("\\i","")
+                #divisao das publicacoes
+                publicacoes = txt.split("webjur informador juridico - folha de acompanhamento processual")
+
+                #categorias
+                #1 - publicação de falência
+                #2 - publicação de convolação em falencia
+                #3 - publicação de extensão dos efeitos de falencia
+                #4 - publicação de insolvencia civil
+                #5 - publicacao de recuperacao extrajudicial
+                #6 - publicação de recuperação judicial
 
 
 
+                i=-1
+                for pub in publicacoes:
+                    pubs_lidas+=1
+                    i+=1
+                    categoria = 0
+                    if 'falencia' in pub or 'falida' in pub or 'falido' in pub:
+                        if ('decretacao de falencia' in pub or 'decretada a falencia' in pub):
+                            categoria = 1
+                            #feito
+                        if 'convolacao da recuperacao judicial em falencia' in pub and ('convolo' in pub or 'relacao de credores' in pub):
+                            categoria = 2
+                            #feito
+                        if 'extensao dos efeitos' in pub and 'recuperacao judicial' in pub:
+                            categoria = 3
+                            #feito
 
+                    if 'insolvencia' in pub:
+                        if ('declaro a insolvencia' in pub or 'declaracao de insolvencia' in pub) and ('convocacao de credores' in pub or 'relacao de credores' in pub) :
+                            categoria = 4
+                            #feito
 
+                    if 'recuperacao extrajudicial' in pub and 'liquidacao extrajudicial' in pub:
+                        if 'decretada a liquidacao extrajudicial' in pub and 'processamento da' in pub:
+                            categoria = 5
 
+                    if 'recuperacao judicial' in pub:
+                        if 'processamento da recuperacao judicial' in pub and ('concedido o processamento' in pub and 'plano de recuperacao' in pub):
+                            categoria = 6
 
+                    if categoria != 0:
+                        id+=1
+                        dict[pub] = categoria
+                        print ("\n\nPUB =>"+i.__str__()+"\nCATEGORIA IDENTIFICADA => "+categoria.__str__())
+                        if (id==-300):
+                            break
+            if id==-300:
+                break
+        if id==-300:
+            break
+    if id==-300:
+        break
 
-txt = "blabla"
-categoria = 0
-#categorias
-#1 - publicação de falência
-#2 - publicação de convolação em falencia
-#3 - publicação de extensão dos efeitos de falencia
-#4 - publicação de insolvencia civil
-#5 - publicacao de recuperacao extrajudicial
-#6 - publicação de recuperação judicial
-
-if 'falencia' in txt or 'falida' in txt or 'falido' in txt:
-    if 'decretado' in txt or 'extinto' in txt or 'encerramento' in txt or 'decretacao' in txt or 'decretad' in txt:
-        categoria = 1
-    if 'convolacao' in txt or 'convolo' in txt or 'relacao de credores' in txt or 'relacao nominal de credores' in txt or 'recuperacao judicial' in txt:
-        categoria = 2
-    if 'extensao dos efeitos' in txt or 'estendo os efeitos' in txt:
-        categoria = 3
-
-if 'insolvencia' in txt:
-    if 'declaro' in txt or 'civil' in txt or 'convocacao dos credores' in txt:
-        categoria = 4
-
-if 'recuperacao extrajudicial' in txt or 'liquidacao extrajudicial' in txt:
-    if 'decretada' in txt or 'processamento' in txt or 'decretado' in txt:
-        categoria = 5
-
-if 'recuperacao judicial' in txt:
-    if 'defiro' in txt or 'deferida' in txt or 'processamento da' in txt or 'concedido' in txt or 'plano de' in txt or 'nomeio' in txt:
-        categoria = 6
+print("Arquivos lidos {0}".format(arqs_lidos))
+print("Pubs lidas {0}".format(pubs_lidas))
+df = DataFrame(list(dict.items()), columns=['pub','categoria'])
+print(df.categoria.value_counts())
+export_csv = df.to_csv (r'export_dataframe.csv', index = None, header=True)

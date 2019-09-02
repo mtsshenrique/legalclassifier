@@ -15,8 +15,9 @@ print (datetime.now().date())
 #laço para percorrer do dia x até data de hoje
 #somar dia
 data_atual = datetime.now().date() - timedelta(days=2)
-data_inicial_webjur = (datetime.strptime('Feb 1 2018', '%b %d %Y')).date()
+data_inicial_webjur = (datetime.strptime('Mar 19 2018', '%b %d %Y')).date()
 data_webjur = data_inicial_webjur
+print (data_inicial_webjur)
 
 while(data_webjur <= data_atual):
     data_webjur = data_webjur + timedelta(days=1)
