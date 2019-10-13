@@ -43,27 +43,32 @@ for root, dirs, files in os.walk("publicacoes"):
                     i+=1
                     categoria = 0
                     if 'falencia' in pub or 'falida' in pub or 'falido' in pub:
-                        if ('decretacao de falencia' in pub or 'decretada a falencia' in pub):
+                        #if (('decretacao de falencia' in pub or 'decretada a falencia' in pub) and 'encerramento' in pub):
+                        if (('decretacao de falencia' in pub or 'decretada a falencia' in pub)):
                             categoria = 1
                             #feito
-                        if 'convolacao da recuperacao judicial em falencia' in pub and ('convolo' in pub or 'relacao de credores' in pub):
+                        #if 'convolacao da recuperacao judicial em falencia' in pub and ('convolo' in pub or 'relacao de credores' in pub):
+                        if 'convolacao da recuperacao judicial em falencia' in pub:
                             categoria = 2
                             #feito
-                        if 'extensao dos efeitos' in pub and 'recuperacao judicial' in pub:
+                        #if 'extensao dos efeitos da falencia' in pub and 'recuperacao judicial' in pub:
+                        if 'extensao dos efeitos da falencia' in pub:
                             categoria = 3
                             #feito
 
                     if 'insolvencia' in pub:
-                        if ('declaro a insolvencia' in pub or 'declaracao de insolvencia' in pub) and ('convocacao de credores' in pub or 'relacao de credores' in pub) :
+                        if ('declaro a insolvencia' in pub or 'declaracao de insolvencia' in pub):
                             categoria = 4
                             #feito
 
-                    if 'recuperacao extrajudicial' in pub and 'liquidacao extrajudicial' in pub:
-                        if 'decretada a liquidacao extrajudicial' in pub and 'processamento da' in pub:
+                    if 'recuperacao extrajudicial' in pub or 'liquidacao extrajudicial' in pub:
+                        #if 'decretada a liquidacao extrajudicial' in pub:
+                        if 'decretad' in pub:
                             categoria = 5
 
                     if 'recuperacao judicial' in pub:
-                        if 'processamento da recuperacao judicial' in pub and ('concedido o processamento' in pub and 'plano de recuperacao' in pub):
+                        #if 'processamento da recuperacao judicial' in pub and ('concedido o processamento' in pub or 'plano de recuperacao' in pub):
+                        if 'processamento da recuperacao judicial' in pub:
                             categoria = 6
 
                     if categoria != 0:

@@ -10,12 +10,12 @@ from bs4 import BeautifulSoup
 print (datetime.now().date())
 
 
-#ultimo dia executado - 2018-03-19
+#ultimo dia executado - 2018-06-26
 
 #laço para percorrer do dia x até data de hoje
 #somar dia
 data_atual = datetime.now().date() - timedelta(days=2)
-data_inicial_webjur = (datetime.strptime('Mar 19 2018', '%b %d %Y')).date()
+data_inicial_webjur = (datetime.strptime('May 24 2018', '%b %d %Y')).date()
 data_webjur = data_inicial_webjur
 print (data_inicial_webjur)
 
