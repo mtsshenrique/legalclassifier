@@ -6,6 +6,45 @@ from nltk.corpus import stopwords
 import csv
 import sys
 
+
+
+def clusterizacao():
+    import numpy  as np
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from nltk.corpus import stopwords
+
+    # set font size of labels on matplotlib plots
+    plt.rc('font', size=16)
+
+    # set style of plots
+    sns.set_style('white')
+
+    df = pd.read_csv('export_dataframe.csv')
+
+    #capturando frequencias de palavras dos textos
+
+    vectorizer = TfidfVectorizer(stop_words=stopwords.words('portuguese'))
+    X = vectorizer.fit_transform(df['pub'][:100])
+
+
+    #dados
+    #X = np.array(pubs)
+    from sklearn.cluster import KMeans
+    kmeans = KMeans(n_clusters=6, random_state=0)
+    kmeans.fit(X)
+    y = kmeans.labels_
+    df['labels_cluster'] = pd.Series(kmeans.labels_)
+
+
+    #sns.lmplot(data=df,x=5,y=5, hue='labels_cluster',fit_reg=False, legend=True, legend_out=True)
+
+    sns.pairplot(df[:100],hue='labels_cluster', vars=df['labels_cluster'])
+    print ("Done")
+
+clusterizacao()
+
 csv.field_size_limit(sys.maxsize)
 publicacoes = []
 arquivo = open('export_dataframe.csv', 'r')
